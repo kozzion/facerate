@@ -10,8 +10,9 @@ COPY . .
 EXPOSE 80
 
 RUN apt-get update
-RUN apt-get install build-essential cmake
-RUN apt-get install libopenblas-dev liblapack-dev 
+RUN apt-get install build-essential cmake -y
+RUN apt-get install libopenblas-dev liblapack-dev -y
+
 RUN pip install --upgrade pip
 
 #RUN pip install dlib

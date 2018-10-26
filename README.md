@@ -10,7 +10,7 @@ ssh -i JaapOosterbroek_EC2_EUC1_2.pem ubuntu@35.158.141.122
 
 # get repro and build docker
 sudo apt-get update
-sudo apt-get install docker.io
+sudo apt-get install docker.io -y
 git clone https://github.com/kozzion/facerate.git
 cd ~/facerate
 sudo docker pull continuumio/anaconda3
@@ -43,3 +43,6 @@ top -o %MEM
 -- for copying data
 use winscp
 killall5 -9
+
+# remove key
+ssh-keygen -R 35.158.141.122
