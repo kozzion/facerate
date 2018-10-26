@@ -7,23 +7,27 @@ import hashlib
 
 class Persistency(object):
     """docstring for Persistency."""
-    def __init__(self, rootPath = 'C:\\DataSets\\SCUTFBP5500\\'):
+    def __init__(self, rootDirPath):
         super(Persistency, self).__init__()
-        self.rootPath = rootPath
-        self.imageDirPath = rootPath + 'image\\'
-        self.imageResultDirPath = rootPath + 'imageresult\\'
-        self.encodingDirPath = rootPath + 'encoding\\'
-        self.dataDirPath = rootPath + 'data\\'
+        self.rootDirPath = rootDirPath
+        self.imageDirPath = os.path.join(rootDirPath, "image")
+        self.imageResultDirPath = os.path.join(rootDirPath, "imageresult")
+        self.encodingDirPath = os.path.join(rootDirPath, "encoding")
+        self.dataDirPath = os.path.join(rootDirPath, "data")
+
+        os.makedirs(self.rootDirPath, exist_ok=True)
+        os.makedirs(self.imageDirPath, exist_ok=True)
+        os.makedirs(self.imageResultDirPath, exist_ok=True)
+        os.makedirs(self.encodingDirPath, exist_ok=True)
+        os.makedirs(self.dataDirPath, exist_ok=True)
 
     def getImageFilePath(self, url):
-        os.makedirs(self.imageDirPath, exist_ok=True)
         fileName = hashlib.sha256(url.encode('utf-8')).hexdigest() + '.jpg' #TODO in future other extentions
-        return self.imageDirPath + fileName
+        return os.path.join(self.imageDirPath, fileName)
 
     def getImageResultFilePath(self, url):
-        os.makedirs(self.imageResultDirPath, exist_ok=True)
         fileName = hashlib.sha256(url.encode('utf-8')).hexdigest() + '.json'
-        return self.imageResultDirPath + fileName
+        return os.path.join(self.imageResultDirPath, fileName)
 
 
     def loadImageFilePathList(self):
@@ -33,19 +37,20 @@ class Persistency(object):
         return [os.path.splitext(file)[0] for file in os.listdir(self.imageDirPath) if os.path.isfile(os.path.join(self.imageDirPath, file))]
 
     def loadRatingList(self) :
-        filePath  = self.rootPath + 'allratings.csv'
+        filePath  = os.path.join(self.rootDirPath, 'allratings.csv')
         with open(filePath, 'r') as csvfile:
             return list(csv.reader(csvfile, delimiter=',', quotechar='|'))[1:]
 
 
     def saveDataSet(self, datasetName, X, Y):
-        filePath = self.dataDirPath + datasetName + '.json'
+        filePath = os.path.join(self.dataDirPath, datasetName + '.json')
         with codecs.open(filePath, 'w', encoding='utf-8') as file:
             json.dump((X.tolist(), Y.tolist()), file, separators=(',', ':'), sort_keys=True, indent=4)
         # self.saveJson(filePath, (X,Y))
 
     def loadDataSet(self, datasetName):
-        filePath = self.dataDirPath + datasetName + '.json'
+        filePath = os.path.join(self.dataDirPath , datasetName + '.json')
+        print(filePath)
         if os.path.isfile(filePath):
             with codecs.open(filePath, 'r', encoding='utf-8') as file:
                 (Xlist, Ylist) = json.loads(file.read())
@@ -55,12 +60,12 @@ class Persistency(object):
         # self.saveJson(filePath, (X,Y))
 
     def loadEncoding(self, username):
-        filePath  = self.encodingDirPath + username + '.json'
+        filePath  = os.path.join(self.encodingDirPath, username + '.json')
         return self.loadJson(filePath)
 
 
     def saveEncoding(self, username, encoding):
-        filePath =  self.encodingDirPath + username + '.json'
+        filePath =  os.path.join(self.encodingDirPath, username + '.json')
         self.saveJson(filePath, encoding)
 
 

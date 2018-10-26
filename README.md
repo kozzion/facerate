@@ -1,10 +1,16 @@
 # facerate
 a facial beauty rating web service
 
-# TODO replace:
-# IP, 
-# pem file
-# start amazon instance
+# life advice:
+delete facebook/instagram/snapchat
+lawyer up
+hit the gym
+
+# Instalation advice
+## before we start
+If on windows download gitbash
+Replace in this advice list: server IP, pem file
+Start amazon instance t2.medium
 # connect to amazon instance:
 ssh -i JaapOosterbroek_EC2_EUC1_2.pem ubuntu@35.158.141.122
 
@@ -14,15 +20,16 @@ sudo apt-get install docker.io -y
 git clone https://github.com/kozzion/facerate.git
 cd ~/facerate
 sudo docker pull continuumio/anaconda3
+# this next can one take about 10 minutes on t2.medium instance
 sudo docker build -t facerate .
-sudo docker run -p 80:80 -it facerate /bin/bash # interactive
+
+# run docker
 sudo docker run -p 80:80 facerate
-
-
-
-
-#inside container
+# or interactive:
+sudo docker run -p 80:80 -it facerate /bin/bash # interactive
 --usefull docker commands
+
+
 
 docker --version
 sudo docker image ls

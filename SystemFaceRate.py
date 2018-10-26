@@ -10,10 +10,10 @@ from ModelFaceLinear import ModelFaceLinear
 
 class SystemFaceRate(object):
     """docstring for SystemFaceRate."""
-    def __init__(self):
+    def __init__(self, persistency):
         super(SystemFaceRate, self).__init__()
         self.ratingModel = ModelFaceLinear()
-        self.persistency = Persistency()
+        self.persistency = persistency
         X,Y = self.persistency.loadDataSet('meanrating')
         self.ratingModel.fit(X,Y)
 

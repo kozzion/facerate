@@ -1,5 +1,2 @@
 #!/bin/bash
-cd ~/python
-#python ServerRelay.py &
-#python ServerActual.py
-
+python serviceRateFace.py ./persitancy

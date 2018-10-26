@@ -53,8 +53,11 @@ def imageresultforimagefile():
     imageResult = system.processFilePath(filePath)
     return jsonify(imageResult)
 
-persistency = Persistency()
-system = SystemFaceRate()
+rootDirPath = './persitency/'
+if (1 < len(sys.argv)) :
+    rootDirPath = sys.argv[1]
+persistency = Persistency(rootDirPath)
+system = SystemFaceRate(persistency)
 
 if __name__ == '__main__':
     # logging.basicConfig(filename='error.log',level=logging.DEBUG)
