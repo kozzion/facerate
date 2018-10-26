@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <div>
+      <label>hostname</label>
+      <input type="text" id="hostname" value="http://127.0.0.1:5000">
+    </div>
+    <div>
+      <label>url</label>
+      <input type="text" id="inputurl" value="https://www.biography.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cg_face%2Cq_auto:good%2Cw_300/MTE4MDAzNDEwNzg5ODI4MTEw/barack-obama-12782369-1-402.jpg">
+    </div>
+
+    <h2>Result</h2>
+    <div>
+      <label>rating: </label>
+      <label id="rating">
+    </div>
+    <div>
+      <label>payload: </label>
+      <label id="payload">
+    </div>
+    <button id="buttonpost">post</button>
+  </body>
+<script>
+  function imageresultforurl() {
+    hostname = document.getElementById("hostname").value
+    inputurl = document.getElementById("inputurl").value
+
+    var url = hostname + '/facerate/1.0/imageresultforurl';
+    xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var json = JSON.parse(xhr.responseText);
+            if (0 < json.faceList.length){
+              document.getElementById('rating').innerHTML = json.faceList[0].rating
+            } else{
+              document.getElementById('rating').innerHTML = "no face found"
+            }
+            document.getElementById('payload').innerHTML = JSON.stringify(json)
+        }
+    }
+    var data = JSON.stringify({"url":inputurl});
+    xhr.send(data);
+  }
+
+  document.getElementById("buttonpost").onclick = imageresultforurl;
+</script>
+</html>
