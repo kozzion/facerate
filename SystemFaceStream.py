@@ -9,14 +9,14 @@ from ModelFaceLinear import ModelFaceLinear
 
 class SystemFaceStream(object):
     """docstring for SystemFaceStream."""
-    def __init__(self, memorySize = 10):
+    def __init__(self, rootDirPath = './persitency/', memorySize = 10):
         super(SystemFaceStream, self).__init__()
         self.memorySize = memorySize
         self.streamDict = {}
         self.ratingModel = ModelFaceLinear()
         self.frameIndex = 0
 
-        ps = Persistency()
+        ps = Persistency(rootDirPath)
         X,Y = ps.loadDataSet('meanrating')
         self.ratingModel.fit(X,Y)
 
