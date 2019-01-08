@@ -9,10 +9,18 @@ from flask import request
 
 import string
 import random
+import base64
 
 from SystemFaceRate import SystemFaceRate
 from Persistency import Persistency
 
+apiKey = ''
+with open('apikey.txt', 'r') as file:
+    apiKey = file.read()
+
+if(apiKey == ''):
+    print('must define api key in apikey.txt')
+    exit()
 
 app = Flask(__name__, static_folder='./html/')
 
@@ -29,29 +37,55 @@ def index():
 def imageresultforurl():
     jsonObject = request.get_json()
     #validate data
-    if jsonObject == None:
-        return jsonify('no json payload'), 500
-    if not 'url' in jsonObject:
-        return jsonify('missing: url'), 500
+    isValid, responsePayload, statusCode =  validate(jsonObject, ['url'])
+    if not isValid:
+        return jsonify(responsePayload), statusCode
 
     url = jsonObject['url']
 
     imageResult = system.processUrl(url)
     return jsonify(imageResult)
 
-# work with uploaded file (for phone....)
-@app.route('/facerate/1.0/imageresultforimagefile', methods=['post'])
-def imageresultforimagefile():
-    if not 'imageFile' in request.files:
-        return jsonify('no file payload: imageFile'), 500
 
-    imageFile = request.files['imageFile']
+# work with uploaded file (for phone....)
+@app.route('/facerate/1.0/imageresultforimagebase64', methods=['post'])
+def imageresultforimagebase64():
+    jsonObject = request.get_json()
+    #validate data
+    isValid, responsePayload, statusCode =  validate(jsonObject, ['imagebase64'])
+    if not isValid:
+        return jsonify(responsePayload), statusCode
+
+    imagebase64 = jsonObject['imagebase64']
+    fileContent = base64.b64decode(imagebase64)
     randomString = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(256))
     filePath = persistency.getImageFilePath(randomString)
-    imageFile.save(filePath)
+    with open(filePath, 'wb') as file:
+        file.write(fileContent)
 
     imageResult = system.processFilePath(filePath)
     return jsonify(imageResult)
+
+
+def validate(jsonObject, requiredFieldList):
+    if jsonObject == None:
+        responsePayload = {'message':'no json payload'}
+        return False, responsePayload, 400
+
+    if not 'apikey' in jsonObject:
+        responsePayload = {'message':'missing field: apikey'}
+        return False, responsePayload, 400
+
+    for requiredField in requiredFieldList:
+        if not requiredField in jsonObject:
+            responsePayload = {'message':'missing field: ' + requiredField}
+            return False, responsePayload, 400
+
+    if not(apiKey == jsonObject['apikey']):
+        responsePayload = {'message':'apikey incorrect'}
+        return False, responsePayload, 403
+
+    return True, None, 200
 
 rootDirPath = './persitency/'
 if (1 < len(sys.argv)) :
@@ -61,4 +95,4 @@ system = SystemFaceRate(persistency)
 
 if __name__ == '__main__':
     # logging.basicConfig(filename='error.log',level=logging.DEBUG)
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=5004)

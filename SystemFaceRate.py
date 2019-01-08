@@ -39,7 +39,7 @@ class SystemFaceRate(object):
 
     def processFilePath(self, imageFilePath):
         image = face_recognition.load_image_file(imageFilePath)
-        os.remove(imageFilePath)
+        # os.remove(imageFilePath)
         return self.processImage(image)
 
     def processImage(self, image):
