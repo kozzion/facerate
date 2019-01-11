@@ -3,7 +3,7 @@ import itertools
 import os
 import face_recognition
 import requests
-
+import numpy as np
 from Persistency import Persistency
 from ModelFaceLinear import ModelFaceLinear
 
@@ -35,6 +35,7 @@ class SystemFaceRate(object):
         image = face_recognition.load_image_file(imageFilePath)
         imageResult = self.processImage(image)
         self.persistency.saveImageResult(url, imageResult)
+        
         return imageResult
 
     def processFilePath(self, imageFilePath):
@@ -45,16 +46,23 @@ class SystemFaceRate(object):
     def processImage(self, image):
         locationList = face_recognition.face_locations(image)
         encodingList = face_recognition.face_encodings(image, locationList)
-        ratingList = self.ratingModel.predict(encodingList)
+        ratingListList = self.ratingModel.predict(encodingList)
 
         imageResult = {}
-        imageResult['faceList'] = []
+        imageResult['imageWidth'] = np.size(image, 1)
+        imageResult['imageHeight'] = np.size(image, 0)
+        imageResult['imageFeatureList'] = []
+        imageResult['imagePropertyMap'] = {}
+        imageResult['imageTagMap'] = {}
 
         for i in range(len(locationList)):
-            faceResult = {}
-            faceResult['location'] = locationList[i]
-            faceResult['encoding'] = encodingList[i].tolist()
-            faceResult['rating'] = ratingList[i][0]
-            imageResult['faceList'].append(faceResult)
+            imageFeature = {}
+            imageFeature['featureLocation'] = locationList[i]
+            imageFeature['featurePropertyMap'] = {}
+            imageFeature['featureTagMap'] = {}
+
+            imageFeature['featurePropertyMap']['rating'] = ratingListList[i][0]
+
+            imageResult['imageFeatureList'].append(imageFeature)
 
         return imageResult

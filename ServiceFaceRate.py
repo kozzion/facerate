@@ -64,6 +64,7 @@ def imageresultforimagebase64():
         file.write(fileContent)
 
     imageResult = system.processFilePath(filePath)
+    
     return jsonify(imageResult)
 
 
