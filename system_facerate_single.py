@@ -17,26 +17,6 @@ class SystemFaceRate(object):
         X,Y = self.persistency.loadDataSet('meanrating')
         self.ratingModel.fit(X,Y)
 
-    def downloadImage(self, url):
-        filePath = self.persistency.getImageFilePath(url)
-        response = requests.get(url, allow_redirects=True)
-        with open(filePath, 'wb') as file:
-            file.write(response.content)
-
-    def processUrl(self, url):
-        imageResult = self.persistency.loadImageResult(url)
-        if imageResult:
-            return imageResult
-
-        imageFilePath = self.persistency.getImageFilePath(url)
-        if not os.path.isfile(imageFilePath) :
-            self.downloadImage(url)
-
-        image = face_recognition.load_image_file(imageFilePath)
-        imageResult = self.processImage(image)
-        self.persistency.saveImageResult(url, imageResult)
-        
-        return imageResult
 
     def processFilePath(self, imageFilePath):
         image = face_recognition.load_image_file(imageFilePath)

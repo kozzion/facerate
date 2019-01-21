@@ -3,9 +3,9 @@ import os
 import face_recognition
 import numpy as np
 
-from Persistency import Persistency
+from persistency import Persistency
 
-ps = Persistency()
+ps = Persistency('C:/DataSets/SCUTFBP5500')
 
 encodingDict = {}
 imageFilePathList = ps.loadImageFilePathList()
@@ -28,8 +28,6 @@ for imageFilePath in imageFilePathList:
     encodingDict[username] = encoding
     ratingDictDict[username] = {}
 
-# encoding = face_recognition.face_encodings(face_recognition.load_image_file(imageFilePath))[0]
-
 ratingList = ps.loadRatingList()
 for rating in ratingList:
     rater = rating[0]
@@ -43,16 +41,22 @@ for username in ratingDictDict:
     ratingDict[username] = meanRating
 
 
-#build matrix
+#build matrix 1 = C 1 = M
 encodingSize = 128
 usernameList = ps.loadUsernameList()
 X = np.zeros((len(usernameList), encodingSize))
-Y = np.zeros((len(usernameList), 1))
+Y = np.zeros((len(usernameList), 3))
 for i in range(len(usernameList)):
-    X[i,:] = encodingDict[usernameList[i]]
-    Y[i,:] = ratingDict[usernameList[i]]
+    username = usernameList[i]
+    print(username)
+    X[i,:] = encodingDict[username]
+    Y[i,0] = ratingDict[username]
+    if username[0] == 'C':
+        Y[i,1] = 1
+    if username[1] == 'M':
+        Y[i,2] = 1
 selection = ~(np.nansum(X, 1) == 0)
 X = X[selection, :]
 Y = Y[selection, :]
 print(X.shape)
-ps.saveDataSet('meanrating', X,Y)
+ps.saveDataSet('rating', X, Y)

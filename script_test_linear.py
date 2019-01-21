@@ -1,11 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import face_recognition
-from Persistency import Persistency
+from persistency import Persistency
 import sklearn
 import sklearn.model_selection
 
-ps = Persistency()
+ps = Persistency('C:/DataSets/SCUTFBP5500')
 
 X,Y = ps.loadDataSet('meanrating')
 

@@ -1,7 +1,6 @@
 import numpy as np
 
-from RescalerUniformHistrogram import RescalerUniformHistrogram
-
+from rescaler_uniform_histrogram import RescalerUniformHistrogram
 
 class ModelFaceLinear(object):
     """docstring for ModelFaceLinear."""
