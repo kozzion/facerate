@@ -23,35 +23,35 @@ class ModelFaceLinearMulty(object):
         ratingNameList = []
         xList.append(X)
         yList.append(Y[:,0])
-        ratingNameList.append('rating all')
+        ratingNameList.append('rating_all')
 
         xList.append(X)
         yList.append(Y[:,1])
-        ratingNameList.append('rating c')
+        ratingNameList.append('rating_c')
 
         xList.append(X)
         yList.append(Y[:,2])
-        ratingNameList.append('rating m')
+        ratingNameList.append('rating_m')
 
         S = np.logical_and(Y[:,1] == 0, Y[:,2] == 0)
         xList.append(X[S,:])
         yList.append(Y[S,0])
-        ratingNameList.append('rating af')
+        ratingNameList.append('rating_af')
 
         S = np.logical_and(Y[:,1] == 0, Y[:,2] == 1)
         xList.append(X[S,:])
         yList.append(Y[S,0])
-        ratingNameList.append('rating am')
+        ratingNameList.append('rating_am')
 
         S = np.logical_and(Y[:,1] == 1, Y[:,2] == 0)
         xList.append(X[S,:])
         yList.append(Y[S,0])
-        ratingNameList.append('rating cf')
+        ratingNameList.append('rating_cf')
 
         S = np.logical_and(Y[:,1] == 1, Y[:,2] == 1)
         xList.append(X[S,:])
         yList.append(Y[S,0])
-        ratingNameList.append('rating cm')
+        ratingNameList.append('rating_cm')
 
         return xList, yList, ratingNameList
 
