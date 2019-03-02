@@ -36,20 +36,19 @@ class Persistency(object):
     def loadUsernameList(self):
         return [os.path.splitext(file)[0] for file in os.listdir(self.imageDirPath) if os.path.isfile(os.path.join(self.imageDirPath, file))]
 
-    def loadRatingList(self) :
+    def load_rating_list(self) :
         filePath  = os.path.join(self.rootDirPath, 'allratings.csv')
         with open(filePath, 'r') as csvfile:
             return list(csv.reader(csvfile, delimiter=',', quotechar='|'))[1:]
 
 
-    def saveDataSet(self, datasetName, X, Y):
+    def save_dataset_dual(self, dataset_name, X, Y):
         filePath = os.path.join(self.dataDirPath, datasetName + '.json')
         with codecs.open(filePath, 'w', encoding='utf-8') as file:
             json.dump((X.tolist(), Y.tolist()), file, separators=(',', ':'), sort_keys=True, indent=4)
-        # self.saveJson(filePath, (X,Y))
 
-    def loadDataSet(self, datasetName):
-        filePath = os.path.join(self.dataDirPath , datasetName + '.json')
+    def load_dataset_dual(self, dataset_name):
+        filePath = os.path.join(self.dataDirPath , dataset_name + '.json')
         print(filePath)
         if os.path.isfile(filePath):
             with codecs.open(filePath, 'r', encoding='utf-8') as file:
@@ -57,7 +56,14 @@ class Persistency(object):
                 return np.array(Xlist), np.array(Ylist)
         else:
             return None
-        # self.saveJson(filePath, (X,Y))
+
+    def save_dataset(self, dataset_name, dataset):
+        filePath = os.path.join(self.dataDirPath, dataset_name + '.json')
+        self.saveJson(filePath, dataset)
+
+    def load_dataset(self, dataset_name):
+        filePath = os.path.join(self.dataDirPath, dataset_name + '.json')
+        return self.loadJson(filePath)
 
     def loadEncoding(self, username):
         filePath  = os.path.join(self.encodingDirPath, username + '.json')
